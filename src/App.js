@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect, useCallback} from 'react';
 import './App.css';
 
 const App = () => {
@@ -6,36 +6,57 @@ const App = () => {
     setCanvasContext] = useState({});
   const [isDragging,
     setIsDragging] = useState(false);
+  const [prevPosition,
+    setPrevPosition] = useState(null);
 
   const canvasRef = useRef(null);
 
+  const init = useCallback(() => {
+    if (canvasRef.current) {
+      canvasRef.current.width = window.innerWidth;
+      canvasRef.current.height = window.innerHeight;
+    }
+  }, []);
+
   useEffect(() => {
     setCanvasContext(canvasRef.current.getContext('2d'));
-  }, []);
+    init();
+  }, [init]);
 
   const onMouseMove = (e) => {
     if (isDragging) {
-      const x = e.pageX - canvasRef.current.offsetLeft;
-      const y = e.pageY - canvasRef.current.offsetTop;
-
-      canvasContext.beginPath();
-      canvasContext.arc(x, y, 40, 0, 2 * Math.PI);
-      canvasContext.stroke();
+      var rect = canvasRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      if (!prevPosition) {
+          setPrevPosition({x, y});
+      } 
+      else {
+        canvasContext.moveTo(prevPosition.x ,prevPosition.y);
+        canvasContext.lineTo(x, y);
+        canvasContext.stroke();
+        setPrevPosition({x, y});
+      }
     }
   };
 
-  const onMouseDown = () => setIsDragging(true);
+  const onMouseDown = (e) => {
+    canvasContext.beginPath();
+    canvasContext.moveTo(e.clientX, e.clientY);
+    setIsDragging(true);
+  }
 
-  const onMouseUp = () => setIsDragging(false);
+  const onMouseUp = () => {
+    setIsDragging(false);
+    setPrevPosition(null);  
+  }
 
   return (
-    <div className="App">
-      The app is running
+    <div className="canvas-container">
       <canvas
         ref={canvasRef}
         className="canvas"
-        height="500"
-        width="500"
         onMouseMove={onMouseMove}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}/>
