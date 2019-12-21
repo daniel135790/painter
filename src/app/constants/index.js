@@ -1,0 +1,7 @@
+const DEFAULT_LINE_WIDTH = 1;
+const DEFAULT_LINE_COLOR = '#000';
+
+export default {
+    DEFAULT_LINE_COLOR,
+    DEFAULT_LINE_WIDTH
+};

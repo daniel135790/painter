@@ -1,13 +1,16 @@
 import React, {useState} from 'react';
 import Canvas from '../Components/Canvas'
+import Toolbar from '../Components/Toolbar';
+import constants from "../constants";
 import './App.css';
-import Toolbar from '../Components/Toolbar/Toolbar';
+
+const {DEFAULT_LINE_COLOR, DEFAULT_LINE_WIDTH} = constants;
 
 const App = () => {
   const [lineWidth,
-    setLineWidth] = useState(1);
+    setLineWidth] = useState(DEFAULT_LINE_WIDTH);
   const [lineColor,
-    setLineColor] = useState('#fff');
+    setLineColor] = useState(DEFAULT_LINE_COLOR);
 
   const onLineWidthChange = e => setLineWidth(e.target.value);
 
