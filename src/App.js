@@ -1,9 +1,14 @@
-import React, {useRef, useState, useEffect, useCallback} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
+import {HuePicker} from 'react-color';
 import './App.css';
 
 const App = () => {
   const [canvasContext,
     setCanvasContext] = useState({});
+  const [lineWidth,
+    setLineWidth] = useState(1);
+  const [lineColor,
+    setLineColor] = useState('#fff');
   const [isDragging,
     setIsDragging] = useState(false);
   const [prevPosition,
@@ -11,7 +16,7 @@ const App = () => {
 
   const canvasRef = useRef(null);
 
-  const init = useCallback(() => {
+  useEffect(() => {
     if (canvasRef.current) {
       canvasRef.current.width = window.innerWidth;
       canvasRef.current.height = window.innerHeight;
@@ -19,9 +24,15 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    if (canvasContext) {
+      canvasContext.lineWidth = lineWidth;
+      canvasContext.strokeStyle = lineColor;
+    }
+  }, [canvasContext, lineWidth, lineColor]);
+
+  useEffect(() => {
     setCanvasContext(canvasRef.current.getContext('2d'));
-    init();
-  }, [init]);
+  }, []);
 
   const onMouseMove = (e) => {
     if (isDragging) {
@@ -30,10 +41,9 @@ const App = () => {
       const y = e.clientY - rect.top;
       
       if (!prevPosition) {
-          setPrevPosition({x, y});
-      } 
-      else {
-        canvasContext.moveTo(prevPosition.x ,prevPosition.y);
+        setPrevPosition({x, y});
+      } else {
+        canvasContext.moveTo(prevPosition.x, prevPosition.y);
         canvasContext.lineTo(x, y);
         canvasContext.stroke();
         setPrevPosition({x, y});
@@ -49,11 +59,19 @@ const App = () => {
 
   const onMouseUp = () => {
     setIsDragging(false);
-    setPrevPosition(null);  
+    setPrevPosition(null);
   }
+
+  const onLineWidthChange = (e) => setLineWidth(e.target.value);
+
+  const onLineColorChange = (color) => setLineColor(color.hex);
 
   return (
     <div className="canvas-container">
+      <div>
+        <input type="number" onChange={onLineWidthChange}/>
+        <HuePicker color={lineColor} onChangeComplete={onLineColorChange}/>
+      </div>
       <canvas
         ref={canvasRef}
         className="canvas"
