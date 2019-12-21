@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {HuePicker} from 'react-color';
 import Canvas from '../Components/Canvas'
 import './App.css';
+import Toolbar from '../Components/Toolbar/Toolbar';
 
 const App = () => {
   const [lineWidth,
@@ -15,11 +15,12 @@ const App = () => {
 
   return (
     <div className="canvas-container">
-      <div>
-        <input type="number" onChange={onLineWidthChange}/>
-        <HuePicker color={lineColor} onChangeComplete={onLineColorChange}/>
-      </div>
-      <Canvas lineColor={lineColor} lineWidth={lineWidth} />
+      <Toolbar
+        lineColor={lineColor}
+        lineWidth={lineWidth}
+        onLineColorChange={onLineColorChange}
+        onLineWidthChange={onLineWidthChange}/>
+      <Canvas lineColor={lineColor} lineWidth={lineWidth}/>
     </div>
   );
 }
