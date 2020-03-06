@@ -1,0 +1,12 @@
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.line-width-input {
+    flex: 0.1;
+}
+
+.line-color-picker {
+    flex: 0.8;
+}
