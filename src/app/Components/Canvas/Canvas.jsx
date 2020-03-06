@@ -7,6 +7,8 @@ const Canvas = ({lineWidth, lineColor}) => {
         setIsDragging] = useState(false);
     const [prevPosition,
         setPrevPosition] = useState(null);
+    const [startingPoint,
+        setStartingPoint] = useState(null);
 
     const canvasRef = useRef(null);
 
@@ -39,6 +41,11 @@ const Canvas = ({lineWidth, lineColor}) => {
             if (!prevPosition) {
                 setPrevPosition({x, y});
             } else {
+                canvasContext.clearRect(startingPoint.x, startingPoint.y, prevPosition.x - startingPoint.x, prevPosition.y - startingPoint.y);
+                canvasContext.beginPath();
+                canvasContext.rect(startingPoint.x, startingPoint.y, x - startingPoint.x, y - startingPoint.y);
+                canvasContext.stroke();
+                
                 canvasContext.moveTo(prevPosition.x, prevPosition.y);
                 canvasContext.lineTo(x, y);
                 canvasContext.stroke();
@@ -49,8 +56,10 @@ const Canvas = ({lineWidth, lineColor}) => {
 
     const onMouseDown = (e) => {
         canvasContext.beginPath();
-        canvasContext.moveTo(e.clientX, e.clientY);
+        const [x, y] = [e.clientX, e.clientY];
+        canvasContext.moveTo(x, y);
         setIsDragging(true);
+        setStartingPoint({x, y});
     }
 
     const onMouseUp = () => {
