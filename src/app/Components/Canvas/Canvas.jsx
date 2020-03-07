@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useRef} from "react";
+import {Box} from '@material-ui/core';
 
 const Canvas = ({lineWidth, lineColor}) => {
     const [canvasContext,
@@ -14,8 +15,10 @@ const Canvas = ({lineWidth, lineColor}) => {
 
     useEffect(() => {
         if (canvasRef.current) {
-            canvasRef.current.width = window.innerWidth;
-            canvasRef.current.height = window.innerHeight;
+            const canvasParentBoundingBox = canvasRef.current.parentNode.getBoundingClientRect(); 
+
+            canvasRef.current.width = canvasParentBoundingBox.width;
+            canvasRef.current.height = canvasParentBoundingBox.height;
         }
     }, []);
 
@@ -41,11 +44,6 @@ const Canvas = ({lineWidth, lineColor}) => {
             if (!prevPosition) {
                 setPrevPosition({x, y});
             } else {
-                canvasContext.clearRect(startingPoint.x, startingPoint.y, prevPosition.x - startingPoint.x, prevPosition.y - startingPoint.y);
-                canvasContext.beginPath();
-                canvasContext.rect(startingPoint.x, startingPoint.y, x - startingPoint.x, y - startingPoint.y);
-                canvasContext.stroke();
-                
                 canvasContext.moveTo(prevPosition.x, prevPosition.y);
                 canvasContext.lineTo(x, y);
                 canvasContext.stroke();
@@ -56,7 +54,8 @@ const Canvas = ({lineWidth, lineColor}) => {
 
     const onMouseDown = (e) => {
         canvasContext.beginPath();
-        const [x, y] = [e.clientX, e.clientY];
+        const [x,
+            y] = [e.clientX, e.clientY];
         canvasContext.moveTo(x, y);
         setIsDragging(true);
         setStartingPoint({x, y});
@@ -67,12 +66,16 @@ const Canvas = ({lineWidth, lineColor}) => {
         setPrevPosition(null);
     }
 
-    return (<canvas
-        ref={canvasRef}
-        className="canvas"
-        onMouseMove={onMouseMove}
-        onMouseDown={onMouseDown}
-        onMouseUp={onMouseUp}/>);
+    return (
+        <div style={{flex: 0.95}}>
+            <canvas
+                ref={canvasRef}
+                className="canvas"
+                onMouseMove={onMouseMove}
+                onMouseDown={onMouseDown}
+                onMouseUp={onMouseUp}/>
+        </div>
+    );
 };
 
 export default Canvas;
