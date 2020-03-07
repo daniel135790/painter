@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useRef} from "react";
-import {Box} from '@material-ui/core';
 
 const Canvas = ({lineWidth, lineColor}) => {
     const [canvasContext,
@@ -8,8 +7,6 @@ const Canvas = ({lineWidth, lineColor}) => {
         setIsDragging] = useState(false);
     const [prevPosition,
         setPrevPosition] = useState(null);
-    const [startingPoint,
-        setStartingPoint] = useState(null);
 
     const canvasRef = useRef(null);
 
@@ -58,7 +55,6 @@ const Canvas = ({lineWidth, lineColor}) => {
             y] = [e.clientX, e.clientY];
         canvasContext.moveTo(x, y);
         setIsDragging(true);
-        setStartingPoint({x, y});
     }
 
     const onMouseUp = () => {
@@ -71,6 +67,9 @@ const Canvas = ({lineWidth, lineColor}) => {
             <canvas
                 ref={canvasRef}
                 className="canvas"
+                onTouchStart={onMouseDown}
+                onTouchEnd={onMouseUp}
+                onTouchMove={onMouseMove}
                 onMouseMove={onMouseMove}
                 onMouseDown={onMouseDown}
                 onMouseUp={onMouseUp}/>
