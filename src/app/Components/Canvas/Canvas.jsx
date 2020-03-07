@@ -49,6 +49,25 @@ const Canvas = ({lineWidth, lineColor}) => {
         }
     };
 
+    const onTouchMove = (e) => {
+       e.preventDefault();
+            var rect = canvasRef
+                .current
+                .getBoundingClientRect();
+            const x = e.touches[0].clientX - rect.left;
+            const y = e.touches[0].clientY - rect.top;
+
+            if (!prevPosition) {
+                setPrevPosition({x, y});
+            } else {
+                canvasContext.moveTo(prevPosition.x, prevPosition.y);
+                canvasContext.lineTo(x, y);
+                canvasContext.stroke();
+                setPrevPosition({x, y});
+            }
+        
+    };
+
     const onMouseDown = (e) => {
         canvasContext.beginPath();
         const [x,
@@ -67,9 +86,7 @@ const Canvas = ({lineWidth, lineColor}) => {
             <canvas
                 ref={canvasRef}
                 className="canvas"
-                onTouchStart={onMouseDown}
-                onTouchEnd={onMouseUp}
-                onTouchMove={onMouseMove}
+                onTouchMove={onTouchMove}
                 onMouseMove={onMouseMove}
                 onMouseDown={onMouseDown}
                 onMouseUp={onMouseUp}/>
